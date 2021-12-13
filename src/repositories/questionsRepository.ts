@@ -4,7 +4,7 @@ import { QuestionBodyDB } from "../interfaces/questionsIntefaces";
 
 async function getUserByName(student: string): Promise <number>{
     const result = await connection.query("SELECT id FROM users WHERE name = $1",[student])
-    if(!result){
+    if(result.rowCount === 0){
         return null;
     }
     return result.rows[0].id;
