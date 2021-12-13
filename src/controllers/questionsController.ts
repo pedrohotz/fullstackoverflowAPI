@@ -7,13 +7,14 @@ async function create(req: Request, res: Response): Promise<Response<any,Record<
     const questionBody : QuestionBody = req.body;
     try {
         const { error } = questionSchemma.validate(questionBody);
-        if(error)  return res.sendStatus(400).send("Invalid Body");
+        if(error)  return res.status(400).send("Invalid Body");
         const result = await questionsServices.create(questionBody);
+        if(!result) return res.status(404).send("User not Found");
         return res.status(201).send({
             id: result
         })
     } catch (error) {
-        return res.sendStatus(500);
+        return res.status(500);
     }
 }
 

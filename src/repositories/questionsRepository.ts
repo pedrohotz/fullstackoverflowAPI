@@ -15,10 +15,10 @@ async function getUserByName(student: string): Promise <number>{
 async function insertQuestion(questionBody: QuestionBodyDB) : Promise <number>{
     const {
         question,
-        studentId,
+        userId,
         tags,
     } = questionBody;
-    const result = await connection.query("INSERT INTO questions (question,student,tags) VALUES ($1,$2,$3) RETURNING id", [question,studentId,tags]);
+    const result = await connection.query("INSERT INTO questions (question,student,tags) VALUES ($1,$2,$3) RETURNING id", [question,userId,tags]);
     return result.rows[0].id;
 }
 
