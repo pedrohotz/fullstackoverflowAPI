@@ -12,5 +12,6 @@ app.post('/questions/:id',authorization,questionsController.answerQuestion);
 app.post('/users', userController.create);
 
 app.get('/questions', questionsController.getUnansweredQuestions);
+app.get('/questions/:id',questionsController.getQuestionById);
 
 export default app;

@@ -1,5 +1,5 @@
-import { AnswerQuestionBody, QuestionBody } from "../interfaces/questionsIntefaces";
-import { UnansweredQuestionsBody } from "../interfaces/userInterfaces";
+import { AnswerQuestionBody, QuestionBody } from "../interfaces/questionsInterfaces";
+import { UnansweredQuestionsBody } from "../interfaces/questionsInterfaces";
 import * as questionsRepository from '../repositories/questionsRepository';
 import * as userRepository from '../repositories/userRepository';
 
@@ -52,9 +52,29 @@ async function getUnansweredQuestions() : Promise <UnansweredQuestionsBody[]> {
     return result;
 }
 
+async function getQuestionsById(questionId:number) {
+    const isAnswered = await questionsRepository.getIfQuestiosIsAnswered(questionId);
+    if(isAnswered){
+        let answeredQuestion = await questionsRepository.getAnsQuestionById(questionId);
+        const result = {
+            ...answeredQuestion,
+            submitedAt: formatTimeStamp(answeredQuestion.submitedAt),
+            answeredAt: formatTimeStamp(answeredQuestion.answeredAt),
+        }
+        return result;
+    }
+    const unansweredQuestion = await questionsRepository.getUnanQuestionById(questionId);
+    const result = {
+        ...unansweredQuestion,
+        submitedAt: formatTimeStamp(unansweredQuestion.submitedAt)
+    }
+    return result;
+}
+
 
 export { 
  create,
  answerQuestion,
  getUnansweredQuestions,
+ getQuestionsById,
 }

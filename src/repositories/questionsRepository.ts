@@ -1,6 +1,5 @@
 import connection from "../connection/database";
-import { AnswerQuestionBody, QuestionBodyDB } from "../interfaces/questionsIntefaces";
-import { UnansweredQuestionsBody } from "../interfaces/userInterfaces";
+import { AnswerQuestionBody, QuestionBodyDB,AnsweredQuestionBodyById, UnansweredQuestionsBody } from "../interfaces/questionsInterfaces";
 
 
 async function getUserByName(student: string): Promise <number>{
@@ -9,6 +8,14 @@ async function getUserByName(student: string): Promise <number>{
         return null;
     }
     return result.rows[0].id;
+}
+
+async function getIfQuestiosIsAnswered(questionId:number) : Promise <boolean>{
+    const result = await connection.query("SELECT * FROM questions WHERE id = $1",[questionId]);
+    if(result.rowCount === 0){
+        return null;
+    }
+    return result.rows[0].answered;
 }
 
 
@@ -49,10 +56,29 @@ async function getUnansweredQuestions() : Promise <UnansweredQuestionsBody[]> {
     return result.rows;
 }
 
+async function getAnsQuestionById(questionId:number) : Promise <AnsweredQuestionBodyById> {
+    const result = await connection.query(`SELECT questions.question, users.name AS student,class.classname,questions.tags,questions.answered,questions."submitedAt",questions."answeredAt",reply.name AS "answeredBy",questions.answer FROM questions JOIN users ON questions.student = users.id JOIN class ON users.class_id = class.id JOIN users AS reply ON questions."answeredBy" = reply.id WHERE questions.id = $1`,[questionId]);
+    if(result.rowCount === 0){
+        return null;
+    }
+    return result.rows[0];
+}
+
+async function getUnanQuestionById(questionId:number) : Promise <AnsweredQuestionBodyById> {
+    const result = await connection.query(`SELECT questions.question,users.name AS student,class.classname,questions.tags,questions.answered,questions."submitedAt" FROM questions JOIN users ON questions.student = users.id JOIN class ON users.class_id = class.id WHERE questions.id = $1`,[questionId]);
+    if(result.rowCount === 0){
+        return null;
+    }
+    return result.rows[0];
+}
+
 export {
     insertQuestion,
     getUserByName,
     checkForExistentQuestion,
     answer,
     getUnansweredQuestions,
+    getIfQuestiosIsAnswered,
+    getAnsQuestionById,
+    getUnanQuestionById,
 }

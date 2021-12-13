@@ -1,5 +1,5 @@
 import { Response, Request } from "express";
-import { QuestionBody } from "../interfaces/questionsIntefaces";
+import { QuestionBody } from "../interfaces/questionsInterfaces";
 import { questionSchemma } from '../schemmas/questionsSchemmas';
 import * as questionsServices from '../services/questionsService';
 
@@ -44,9 +44,25 @@ async function getUnansweredQuestions(req: Request, res: Response) : Promise<Res
     }
 }
 
+async function getQuestionById(req: Request, res: Response) : Promise<Response<any,Record<string,any>>>{
+    const questionId = Number(req.params.id);
+    try {
+        const result = await questionsServices.getQuestionsById(questionId);
+        if(!result) return res.sendStatus(400);
+        return res.status(200).send(result)
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+
+}
+
+
+
 
 export {
     create,
     answerQuestion,
     getUnansweredQuestions,
+    getQuestionById,
 }

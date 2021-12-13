@@ -10,16 +10,9 @@ interface UserBodyDB{
 }
 
 
-interface UnansweredQuestionsBody {
-    id: number;
-    question: string;
-    student: string;
-    class: string;
-    submitedAt: string;
-  }
+
 
 export {
     UserBody,
     UserBodyDB,
-    UnansweredQuestionsBody,
 }
