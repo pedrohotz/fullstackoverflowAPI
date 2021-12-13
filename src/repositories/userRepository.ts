@@ -10,7 +10,13 @@ async function getClassId(classname:string) : Promise <number> {
 }
 
 
-
+async function getUserByToken(token:string): Promise <number>  {
+    const result = await connection.query('SELECT id FROM users WHERE token = $1',[token]);
+    if(result.rowCount === 0){
+        return null
+    }
+    return result.rows[0].id;
+}
 
 async function checkForExistentUser(name:string, classid:number) : Promise <boolean> {
     const result = await connection.query('SELECT * FROM users WHERE name = $1 AND class_id = $2',[name,classid]);
@@ -36,5 +42,6 @@ async function insertUser(userBody:UserBodyDB) : Promise<string> {
 export{
     getClassId,
     checkForExistentUser,
-    insertUser
+    insertUser,
+    getUserByToken
 }

@@ -11,7 +11,15 @@ interface QuestionBodyDB {
     tags: string;
 }
 
+
+interface AnswerQuestionBody {
+  userId: number;
+  questionId: number;
+  answer: string;
+}
+
   export {
       QuestionBody,
       QuestionBodyDB,
+      AnswerQuestionBody
   }

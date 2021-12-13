@@ -18,6 +18,22 @@ async function create(req: Request, res: Response): Promise<Response<any,Record<
     }
 }
 
+async function answerQuestion(req: Request, res: Response): Promise<Response<any,Record<string,any>>>{
+    const { userId } = res.locals;
+    const questionId = Number(req.params.id);
+    const { answer }  = req.body;
+    try {
+       const result = await questionsServices.answerQuestion({userId,questionId,answer})
+       if(!result) return res.status(400);
+       return res.sendStatus(200);
+    } catch (error) {
+        return res.status(500);
+    }
+
+}
+
+
 export {
     create,
+    answerQuestion,
 }

@@ -1,5 +1,5 @@
 import connection from "../connection/database";
-import { QuestionBodyDB } from "../interfaces/questionsIntefaces";
+import { AnswerQuestionBody, QuestionBodyDB } from "../interfaces/questionsIntefaces";
 
 
 async function getUserByName(student: string): Promise <number>{
@@ -10,6 +10,14 @@ async function getUserByName(student: string): Promise <number>{
     return result.rows[0].id;
 }
 
+
+async function checkForExistentQuestion(questionId:number) : Promise  <boolean> {
+    const result = await connection.query("SELECT * FROM questions WHERE id = $1", [questionId]);
+    if(result.rowCount === 0){
+        return null;
+    }
+    return true;
+}
 
 
 async function insertQuestion(questionBody: QuestionBodyDB) : Promise <number>{
@@ -22,9 +30,19 @@ async function insertQuestion(questionBody: QuestionBodyDB) : Promise <number>{
     return result.rows[0].id;
 }
 
-
+async function answer(answerBody:AnswerQuestionBody) : Promise <boolean> {
+    const {
+        userId,
+        questionId,
+        answer 
+    } = answerBody;
+    await connection.query('UPDATE questions SET "answeredAt" = CURRENT_TIMESTAMP, "answeredBy" = $1, answer = $2, answered = true WHERE id = $3', [userId,answer,questionId]);
+    return true;
+}
 
 export {
     insertQuestion,
     getUserByName,
+    checkForExistentQuestion,
+    answer,
 }

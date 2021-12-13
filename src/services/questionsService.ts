@@ -1,4 +1,4 @@
-import { QuestionBody } from "../interfaces/questionsIntefaces";
+import { AnswerQuestionBody, QuestionBody } from "../interfaces/questionsIntefaces";
 import * as questionsRepository from '../repositories/questionsRepository';
 import * as userRepository from '../repositories/userRepository';
 async function create(questionBody: QuestionBody): Promise<number>{
@@ -21,6 +21,15 @@ async function create(questionBody: QuestionBody): Promise<number>{
 }
 
 
+async function answerQuestion(answerBody:AnswerQuestionBody) : Promise <boolean> {
+    const isValidQuestion = await questionsRepository.checkForExistentQuestion(answerBody.questionId);
+    if(!isValidQuestion) return null;
+    const result = await questionsRepository.answer(answerBody)
+    return result;
+}
+
+
 export { 
  create,
+ answerQuestion,
 }
