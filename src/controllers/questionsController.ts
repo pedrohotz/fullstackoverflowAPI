@@ -33,7 +33,20 @@ async function answerQuestion(req: Request, res: Response): Promise<Response<any
 }
 
 
+async function getUnansweredQuestions(req: Request, res: Response) : Promise<Response<any,Record<string,any>>>{
+    try {
+        const result = await questionsServices.getUnansweredQuestions();
+        if(!result) return res.sendStatus(404);
+        return res.status(200).send(result);
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+}
+
+
 export {
     create,
     answerQuestion,
+    getUnansweredQuestions,
 }

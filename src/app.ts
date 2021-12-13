@@ -7,8 +7,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.post('/question', questionsController.create);
-app.post('/question/:id',authorization,questionsController.answerQuestion);
-app.post('/user', userController.create);
+app.post('/questions', questionsController.create);
+app.post('/questions/:id',authorization,questionsController.answerQuestion);
+app.post('/users', userController.create);
+
+app.get('/questions', questionsController.getUnansweredQuestions);
 
 export default app;

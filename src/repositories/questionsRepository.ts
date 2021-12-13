@@ -1,5 +1,6 @@
 import connection from "../connection/database";
 import { AnswerQuestionBody, QuestionBodyDB } from "../interfaces/questionsIntefaces";
+import { UnansweredQuestionsBody } from "../interfaces/userInterfaces";
 
 
 async function getUserByName(student: string): Promise <number>{
@@ -40,9 +41,18 @@ async function answer(answerBody:AnswerQuestionBody) : Promise <boolean> {
     return true;
 }
 
+async function getUnansweredQuestions() : Promise <UnansweredQuestionsBody[]> {
+    const result = await connection.query(`SELECT questions.id, questions.question, users.name AS student, class.classname, questions."submitedAt" FROM questions JOIN users ON questions.student = users.id JOIN class ON users.class_id = class.id WHERE answered = false`);
+    if(result.rowCount === 0){
+        return null
+    }
+    return result.rows;
+}
+
 export {
     insertQuestion,
     getUserByName,
     checkForExistentQuestion,
     answer,
+    getUnansweredQuestions,
 }
